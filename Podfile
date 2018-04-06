@@ -9,4 +9,5 @@ target 'standard-style-swift' do
   pod 'Firebase/Core'
   pod 'Firebase/Database'
   pod 'Firebase/Messaging'
+  pod 'SwiftyJSON'
 end

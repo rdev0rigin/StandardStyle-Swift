@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import SwiftyJSON
 
 class ViewController: UIViewController, UITextFieldDelegate {
     let label = UILabel()
@@ -35,18 +36,27 @@ class ViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        var buttonVals = ref.child("button").observe(.value) { (snapshot) in
-            snapshot.value as? [String: String]
-            if let value = snapshot.value{
-                //there is data available
-                let data = value as! [String:Any]
-                let buttonColor: String = "background-color"
-                print("\(data[buttonColor])")
-                self.label.text = data[buttonColor] as? String
-            }else{
-                //there is no data available. snapshot.value is nil
-                print("No data available from snapshot.value!!!!")
-            }
+        var buttonVals = ref.child("/").observe(.value) { (snapshot) in
+            print(snapshot.value)
+            let buttonColors = JSON(snapshot.value ?? (r: 0.0, g: 0.0, b:0.0, a: 1.0))
+            let red = buttonColors["button-color-rgba"]["r"].float
+            let blue = buttonColors["button-color-rgba"]["b"].float
+            let green = buttonColors["button-color-rgba"]["g"].float
+            let alpha = buttonColors["button-color-rgba"]["a"].float
+            self.button.backgroundColor = UIColor(red: CGFloat(red! / 255.00), green: CGFloat(green! / 255.00), blue: CGFloat(blue! / 255.00), alpha: CGFloat(alpha!))
+//            snapshot.value as? [String: String]
+//            if let value = snapshot.value{
+//                //there is data available
+//                var data = value as! [String: AnyObject]
+//                var rgba = data["button-color-rgba"] as! [String:Float]
+////                print("\(data[buttonColor])")
+//                print(CGFloat(rgba["r"]! / 255.00))
+//                print(rgba["r"]!)
+//                self.button.backgroundColor = UIColor(red: CGFloat(rgba["r"]! / 255.00), green: CGFloat(rgba["g"]! / 255.00), blue: CGFloat(rgba["b"]! / 255.00), alpha: CGFloat(rgba["a"]!))
+//            }else{
+//                //there is no data available. snapshot.value is nil
+//                print("No data available from snapshot.value!!!!")
+//            }
         }
     
         self.view.backgroundColor = UIColor(hue: 0.7583, saturation: 1, brightness: 0.59, alpha: 1.0)
